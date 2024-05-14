@@ -1,0 +1,90 @@
+[gd_scene load_steps=12 format=3 uid="uid://b80o66limvphg"]
+
+[ext_resource type="PackedScene" uid="uid://cx7oikeuajixv" path="res://Cenas/player.tscn" id="1_mr00a"]
+[ext_resource type="PackedScene" uid="uid://bkyri7hg84sri" path="res://Cenas/bullet_catcher.tscn" id="2_lj156"]
+[ext_resource type="PackedScene" uid="uid://cjalqtsws4h6f" path="res://Cenas/invader_spawner.tscn" id="3_evwxc"]
+[ext_resource type="Script" path="res://Cenas/UfoSpawner.gd" id="4_1w2n2"]
+[ext_resource type="Script" path="res://Cenas/SpawnTimer.gd" id="4_jaupw"]
+[ext_resource type="PackedScene" uid="uid://c0jyqyn0q1vcd" path="res://Cenas/bunker.tscn" id="6_80s5o"]
+[ext_resource type="Script" path="res://Cenas/LifeManage.gd" id="7_erh36"]
+[ext_resource type="Script" path="res://Cenas/PointsCounter.gd" id="8_ajjy4"]
+[ext_resource type="PackedScene" uid="uid://8e5xqj23wqm8" path="res://Cenas/ui.tscn" id="9_4np5f"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kb37t"]
+size = Vector2(20, 648)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_utgbe"]
+size = Vector2(1112, 45)
+
+[node name="Main" type="Node"]
+
+[node name="Player" parent="." instance=ExtResource("1_mr00a")]
+position = Vector2(0, 302)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="BulletCatcher" parent="." instance=ExtResource("2_lj156")]
+
+[node name="Invader_Spawner" parent="." instance=ExtResource("3_evwxc")]
+
+[node name="walls" type="Node" parent="."]
+
+[node name="LeftWall" type="Area2D" parent="walls"]
+collision_layer = 32
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="walls/LeftWall"]
+position = Vector2(-566, 0)
+shape = SubResource("RectangleShape2D_kb37t")
+
+[node name="RightWall" type="Area2D" parent="walls"]
+collision_layer = 32
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="walls/RightWall"]
+position = Vector2(566, 0)
+shape = SubResource("RectangleShape2D_kb37t")
+
+[node name="ButtomWall" type="Area2D" parent="walls"]
+collision_layer = 32
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="walls/ButtomWall"]
+position = Vector2(0, 295.5)
+shape = SubResource("RectangleShape2D_utgbe")
+
+[node name="UfoSpawner" type="Node2D" parent="."]
+position = Vector2(540, -260)
+script = ExtResource("4_1w2n2")
+
+[node name="SpawnTimer" type="Timer" parent="UfoSpawner"]
+script = ExtResource("4_jaupw")
+
+[node name="Bunker" parent="." instance=ExtResource("6_80s5o")]
+position = Vector2(-376, 174)
+scale = Vector2(4, 4)
+
+[node name="Bunker2" parent="." instance=ExtResource("6_80s5o")]
+position = Vector2(-144, 174)
+scale = Vector2(4, 4)
+
+[node name="Bunker3" parent="." instance=ExtResource("6_80s5o")]
+position = Vector2(144, 174)
+scale = Vector2(4, 4)
+
+[node name="Bunker4" parent="." instance=ExtResource("6_80s5o")]
+position = Vector2(376, 174)
+scale = Vector2(4, 4)
+
+[node name="LifeManager" type="Node" parent="."]
+script = ExtResource("7_erh36")
+
+[node name="PointsCounter" type="Node" parent="."]
+script = ExtResource("8_ajjy4")
+
+[node name="UI" parent="." instance=ExtResource("9_4np5f")]
+
+[connection signal="area_entered" from="walls/LeftWall" to="Invader_Spawner" method="_on_left_wall_area_entered"]
+[connection signal="area_entered" from="walls/RightWall" to="Invader_Spawner" method="_on_right_wall_area_entered"]
+[connection signal="area_entered" from="walls/ButtomWall" to="Invader_Spawner" method="_on_buttom_wall_area_entered"]
+[connection signal="timeout" from="UfoSpawner/SpawnTimer" to="UfoSpawner" method="_on_spawn_timer_timeout"]

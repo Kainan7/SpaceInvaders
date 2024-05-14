@@ -1,0 +1,58 @@
+[gd_scene load_steps=11 format=3 uid="uid://cx7oikeuajixv"]
+
+[ext_resource type="Texture2D" uid="uid://dt0af4o7yh41a" path="res://Assets Space Invaders/Assets Space Invades/Player/Player.png" id="1_dxugm"]
+[ext_resource type="Script" path="res://Cenas/player.gd" id="1_udk5a"]
+[ext_resource type="Texture2D" uid="uid://dsg2krqtkgnca" path="res://Assets Space Invaders/Assets Space Invades/Player/Player-explosion3.png" id="2_kovfy"]
+[ext_resource type="Script" path="res://Cenas/Shooting.gd" id="3_goloy"]
+[ext_resource type="PackedScene" uid="uid://ce64w40v7kvuy" path="res://Cenas/laser.tscn" id="4_a3fgd"]
+[ext_resource type="Texture2D" uid="uid://bi2vdab3slwgf" path="res://Assets Space Invaders/Assets Space Invades/Player/Player-explosion1.png" id="5_a6eq1"]
+[ext_resource type="Texture2D" uid="uid://b4mk25ro2nqtu" path="res://Assets Space Invaders/Assets Space Invades/Player/Player-explosion2.png" id="6_fhdjb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d4b1k"]
+size = Vector2(52, 5)
+
+[sub_resource type="Animation" id="Animation_q4iwh"]
+resource_name = "destroy_player"
+length = 2.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("5_a6eq1"), ExtResource("6_fhdjb"), ExtResource("2_kovfy"), ExtResource("5_a6eq1"), ExtResource("6_fhdjb"), ExtResource("2_kovfy"), ExtResource("5_a6eq1"), ExtResource("6_fhdjb"), ExtResource("2_kovfy")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wd1b3"]
+_data = {
+"destroy_player": SubResource("Animation_q4iwh")
+}
+
+[node name="Player" type="Area2D"]
+collision_mask = 8
+script = ExtResource("1_udk5a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -1)
+scale = Vector2(4, 4)
+texture = ExtResource("1_dxugm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-9.53674e-07, 0.5)
+shape = SubResource("RectangleShape2D_d4b1k")
+
+[node name="Shooting" type="Node2D" parent="."]
+script = ExtResource("3_goloy")
+laser_scene = ExtResource("4_a3fgd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wd1b3")
+}
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
